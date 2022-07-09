@@ -16,7 +16,6 @@ gravity = 15.0
 
 [node name="Player" parent="." instance=ExtResource( 2 )]
 position = Vector2( 5, 20 )
-max_health = null
 
 [node name="TileMap" parent="." instance=ExtResource( 1 )]
 

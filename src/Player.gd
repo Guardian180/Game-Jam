@@ -22,6 +22,7 @@ var is_dj_ready = true
 var blood_jump_cost = 5
 var platform_make_cost = 5
 var platform_drain_cost = 2
+var blood_shot_cost = 10
 
 var _plat_drain_timer = 0.0;
 var _plat_drain_timer_limit = 1.0
@@ -30,6 +31,7 @@ var rng = RandomNumberGenerator.new()
 func _ready():
 	_health = max_health
 	emit_signal("health_update", max_health, _health)
+	$AnimatedSprite.play("idle")
 	rng.randomize()
 
 var Hitbox = preload("res://src/Hitbox.tscn")
@@ -51,11 +53,15 @@ func _physics_process(delta: float):
 	
 	handle_input()
 	
+	var is_still = vel.x
+	
 	vel = move_and_slide(vel, Vector2.UP)
 	
 	# updating variables
 	if vel.y >= 0:
 		is_jumping = false
+
+	update_animation(is_still)
 
 	if is_on_floor():
 		is_dj_ready = true
@@ -67,6 +73,18 @@ func add_or_remove_health(amount):
 		pass
 	_health = min(_health, max_health)
 	emit_signal("health_update", max_health, _health)
+
+func update_animation(is_still):
+	if vel.y < 0:
+		$AnimatedSprite.play("jump")
+	elif vel.y > 0:
+		$AnimatedSprite.play("fall")
+	elif !is_still:
+		$AnimatedSprite.play("move")
+	else:
+		$AnimatedSprite.play("idle")
+	$AnimatedSprite.flip_h = not is_facing_right
+	
 
 func update_vel():
 	vel.x *= get_parent().friction
@@ -151,6 +169,7 @@ func handle_input():
 		do_melee_attack(size, rel_pos)
 		
 	if Input.is_action_just_pressed("Shoot") && can_shoot():
+		add_or_remove_health(blood_shot_cost)
 		var size = Vector2(1.0, 1.0)
 		var rel_pos = Vector2(0, -3 if pressed_up else 3) if pressed_up || pressed_down else Vector2(2 if is_facing_right else -3, 0)
 		var speed = 200;
