@@ -13,10 +13,12 @@ var _health
 var _platform = null
 
 # Various states
+var is_idle = true
 var is_jumping: = false
 var is_attacking = false
 var is_facing_right = true
 var is_dj_ready = true
+var is_charging = false
 
 # Ability costs
 var blood_jump_cost = 5
@@ -24,8 +26,11 @@ var platform_make_cost = 5
 var platform_drain_cost = 2
 var blood_shot_cost = 10
 
-var _plat_drain_timer = 0.0;
+# Timers
+var _plat_drain_timer = 0.0
 var _plat_drain_timer_limit = 1.0
+var _charge_timer = 0.0
+var _charge_timer_limit = 1.0
 
 var rng = RandomNumberGenerator.new()
 func _ready():
@@ -46,6 +51,15 @@ func _process(delta):
 				remove_platform()
 			else:
 				add_or_remove_health(2)
+	if is_charging:
+		_charge_timer += delta
+		if _charge_timer > _charge_timer_limit:
+			is_charging = false
+			var size = Vector2(3.0, 3.0)
+			var pressed_up = Input.is_action_pressed("Up")
+			var pressed_down = Input.is_action_pressed("Down")
+			var rel_pos = Vector2(0, -3 if pressed_up else 3) if pressed_up || pressed_down else Vector2(3 if is_facing_right else -3, 0)
+			do_melee_attack(size, rel_pos, 10, false)
 
 func _physics_process(delta: float):
 	# calling helper functions
@@ -53,15 +67,13 @@ func _physics_process(delta: float):
 	
 	handle_input()
 	
-	var is_still = vel.x
-	
 	vel = move_and_slide(vel, Vector2.UP)
 	
 	# updating variables
 	if vel.y >= 0:
 		is_jumping = false
 
-	update_animation(is_still)
+	update_animation()
 
 	if is_on_floor():
 		is_dj_ready = true
@@ -74,12 +86,12 @@ func add_or_remove_health(amount):
 	_health = min(_health, max_health)
 	emit_signal("health_update", max_health, _health)
 
-func update_animation(is_still):
+func update_animation():
 	if vel.y < 0:
 		$AnimatedSprite.play("jump")
 	elif vel.y > 0:
 		$AnimatedSprite.play("fall")
-	elif !is_still:
+	elif !is_idle:
 		$AnimatedSprite.play("move")
 	else:
 		$AnimatedSprite.play("idle")
@@ -115,7 +127,7 @@ func create_hitbox(size, rel_pos, damage):
 	return hitbox
 	
 	
-func do_melee_attack(size, rel_pos):
+func do_melee_attack(size, rel_pos, damage, heals):
 	var hitbox = create_hitbox(size, rel_pos, 5)
 	# Subscribe to get health!
 	hitbox.connect("area_entered", self, "_on_Hitbox_area_entered")
@@ -141,6 +153,8 @@ func handle_input():
 	var pressed_up = Input.is_action_pressed("Up")
 	var pressed_down = Input.is_action_pressed("Down")
 
+	is_idle = not pressed_left && not pressed_right
+
 	if pressed_left:
 		vel.x -= acc
 
@@ -163,10 +177,15 @@ func handle_input():
 		is_jumping = false
 
 	if Input.is_action_just_pressed("Attack") && !is_attacking:
+		_charge_timer = 0.0
+		is_charging = true
 		is_attacking = true
 		var size = Vector2(1.0, 2.0) if pressed_up || pressed_down else Vector2(2.0, 1.0)
 		var rel_pos = Vector2(0, -3 if pressed_up else 3) if pressed_up || pressed_down else Vector2(2 if is_facing_right else -3, 0)
-		do_melee_attack(size, rel_pos)
+		do_melee_attack(size, rel_pos, 5, true)
+	
+	if Input.is_action_just_released("Attack"):
+		is_charging = false
 		
 	if Input.is_action_just_pressed("Shoot") && can_shoot():
 		add_or_remove_health(blood_shot_cost)
