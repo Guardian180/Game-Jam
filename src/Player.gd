@@ -82,22 +82,39 @@ func remove_platform():
 	_platform.queue_free()
 	_platform = null
 
-func create_hitbox(size, rel_pos):
+func create_hitbox(size, rel_pos, damage):
 	var hitbox = Hitbox.instance()
-	# Subscribe to get health!
-	hitbox.get_node("Collision").shape.set_extents(size)
+	var shape = RectangleShape2D.new()
+	shape.set_extents(size)
+	var collision = CollisionShape2D.new()
+	collision.set_shape(shape)
+	hitbox.add_child(collision)
 	hitbox.position = to_global(rel_pos)
-	hitbox.damage = 5
+	hitbox.damage = damage
 	hitbox.collision_layer = 1 << 2
 	hitbox.collision_mask = 1 << 3
 	get_parent().add_child(hitbox)
+	return hitbox
+	
+	
+func do_melee_attack(size, rel_pos):
+	var hitbox = create_hitbox(size, rel_pos, 5)
+	# Subscribe to get health!
 	hitbox.connect("area_entered", self, "_on_Hitbox_area_entered")
 	yield(get_tree().create_timer(0.2), "timeout")
 	is_attacking = false
 	hitbox.queue_free()
 
+func do_projectile_attack(size, rel_pos, accel):
+	var hitbox = create_hitbox(size, rel_pos, 10)
+	hitbox.projectile = true
+	hitbox.speed = accel
+
 func can_jump():
 	return is_on_floor() || (is_dj_ready && _health > blood_jump_cost);
+	
+func can_shoot():
+	return _health > blood_shot_cost
 
 func handle_input():
 	
@@ -131,7 +148,18 @@ func handle_input():
 		is_attacking = true
 		var size = Vector2(1.0, 2.0) if pressed_up || pressed_down else Vector2(2.0, 1.0)
 		var rel_pos = Vector2(0, -3 if pressed_up else 3) if pressed_up || pressed_down else Vector2(2 if is_facing_right else -3, 0)
-		create_hitbox(size, rel_pos)
+		do_melee_attack(size, rel_pos)
+		
+	if Input.is_action_just_pressed("Shoot") && can_shoot():
+		var size = Vector2(1.0, 1.0)
+		var rel_pos = Vector2(0, -3 if pressed_up else 3) if pressed_up || pressed_down else Vector2(2 if is_facing_right else -3, 0)
+		var speed = 200;
+		var accel = Vector2(0,0)
+		if not pressed_up and not pressed_down:
+			accel = Vector2(speed if is_facing_right else -speed, 0)
+		else:
+			accel = speed * Vector2(int(pressed_right) - int(pressed_left), int(pressed_down) - int(pressed_up))
+		do_projectile_attack (size, rel_pos, accel)
 
 	if Input.is_action_just_pressed("Ouch"):
 		add_or_remove_health(-max_health)

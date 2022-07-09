@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Tile Spread Sheet Area 1.png-9b9285c0dd5fee97a62b3eee5f192f7f.stex"
+path="res://.import/Fall.png-f82e9011fa3678069f509886870202cb.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Tile Spread Sheet Area 1.png"
-dest_files=[ "res://.import/Tile Spread Sheet Area 1.png-9b9285c0dd5fee97a62b3eee5f192f7f.stex" ]
+source_file="res://assets/Fall.png"
+dest_files=[ "res://.import/Fall.png-f82e9011fa3678069f509886870202cb.stex" ]
 
 [params]
 
