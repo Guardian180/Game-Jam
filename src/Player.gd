@@ -1,5 +1,4 @@
-extends KinematicBody2D
-var vel: = Vector2.ZERO
+extends Actor
 
 signal health_update(maxh, curh)
 
@@ -8,7 +7,6 @@ export var acc: = 30.0
 export var jump_height: = 30.0
 
 export var max_health = 100
-var _health
 
 var _platform = null
 
@@ -19,6 +17,7 @@ var is_attacking = false
 var is_facing_right = true
 var is_dj_ready = true
 var is_charging = false
+var is_still_charging = false
 
 # Ability costs
 var blood_jump_cost = 5
@@ -31,6 +30,8 @@ var _plat_drain_timer = 0.0
 var _plat_drain_timer_limit = 1.0
 var _charge_timer = 0.0
 var _charge_timer_limit = 1.0
+var _melee_delay = 0.2
+
 
 var rng = RandomNumberGenerator.new()
 func _ready():
@@ -54,21 +55,17 @@ func _process(delta):
 	if is_charging:
 		_charge_timer += delta
 		if _charge_timer > _charge_timer_limit:
+			is_still_charging = false
 			is_charging = false
 			var size = Vector2(3.0, 3.0)
 			var pressed_up = Input.is_action_pressed("Up")
 			var pressed_down = Input.is_action_pressed("Down")
 			var rel_pos = Vector2(0, -3 if pressed_up else 3) if pressed_up || pressed_down else Vector2(3 if is_facing_right else -3, 0)
 			do_melee_attack(size, rel_pos, 10, false)
+		elif _charge_timer > _melee_delay:
+			is_still_charging = true
 
 func _physics_process(delta: float):
-	# calling helper functions
-	update_vel()
-	
-	handle_input()
-	
-	vel = move_and_slide(vel, Vector2.UP)
-	
 	# updating variables
 	if vel.y >= 0:
 		is_jumping = false
@@ -96,11 +93,7 @@ func update_animation():
 	else:
 		$AnimatedSprite.play("idle")
 	$AnimatedSprite.flip_h = not is_facing_right
-	
 
-func update_vel():
-	vel.x *= get_parent().friction
-	vel.y += get_parent().gravity
 
 func create_platform():
 	_platform = Platform.instance()
@@ -129,9 +122,11 @@ func create_hitbox(size, rel_pos, damage):
 	
 func do_melee_attack(size, rel_pos, damage, heals):
 	var hitbox = create_hitbox(size, rel_pos, 5)
+	hitbox.knock_power = Vector2(200, -100)
 	# Subscribe to get health!
-	hitbox.connect("area_entered", self, "_on_Hitbox_area_entered")
-	yield(get_tree().create_timer(0.2), "timeout")
+	if heals:
+		hitbox.connect("area_entered", self, "_on_Hitbox_area_entered")
+	yield(get_tree().create_timer(_melee_delay), "timeout")
 	is_attacking = false
 	hitbox.queue_free()
 
@@ -141,25 +136,25 @@ func do_projectile_attack(size, rel_pos, accel):
 	hitbox.speed = accel
 
 func can_jump():
-	return is_on_floor() || (is_dj_ready && _health > blood_jump_cost);
+	return (is_on_floor() || (is_dj_ready && _health > blood_jump_cost)) && !is_still_charging;
 	
 func can_shoot():
 	return _health > blood_shot_cost
 
-func handle_input():
+func process_movement_inputs():
 	
 	var pressed_left = Input.is_action_pressed("MoveLeft")
 	var pressed_right = Input.is_action_pressed("MoveRight")
 	var pressed_up = Input.is_action_pressed("Up")
 	var pressed_down = Input.is_action_pressed("Down")
 
-	is_idle = not pressed_left && not pressed_right
+	is_idle = not ((pressed_left and !pressed_right) or (!pressed_left and pressed_right))
 
-	if pressed_left:
-		vel.x -= acc
-
-	if pressed_right:
-		vel.x += acc
+	if !is_still_charging:
+		if pressed_left:
+			vel.x -= acc
+		if pressed_right:
+			vel.x += acc
 
 	is_facing_right = (not pressed_left and pressed_right) or \
 					  (not pressed_left and is_facing_right) or \
@@ -186,6 +181,7 @@ func handle_input():
 	
 	if Input.is_action_just_released("Attack"):
 		is_charging = false
+		is_still_charging = false
 		
 	if Input.is_action_just_pressed("Shoot") && can_shoot():
 		add_or_remove_health(blood_shot_cost)
