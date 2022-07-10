@@ -34,6 +34,12 @@ margin_top = 39.0
 margin_right = 44.0
 margin_bottom = 39.0
 
+[node name="Label" parent="Health" index="0"]
+margin_left = 16.0
+margin_top = -8.0
+margin_right = 56.0
+margin_bottom = 6.0
+
 [connection signal="health_update" from="Player" to="Health" method="_on_Player_health_update"]
 
 [editable path="Health"]
