@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Plague Spreadsheet.png-b2f76798849b46aefc9042fb7f88414a.stex"
+path="res://.import/Plague Spreadsheet.png-f65b975029aec657ab0a37e1cf2c54f9.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Plague Spreadsheet.png"
-dest_files=[ "res://.import/Plague Spreadsheet.png-b2f76798849b46aefc9042fb7f88414a.stex" ]
+source_file="res://Assets/Plague Spreadsheet.png"
+dest_files=[ "res://.import/Plague Spreadsheet.png-f65b975029aec657ab0a37e1cf2c54f9.stex" ]
 
 [params]
 

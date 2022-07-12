@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Basic Swordsman SS.png-962f579634a8056c387b6e035390980c.stex"
+path="res://.import/Basic Swordsman SS.png-cb7f2da9aa466329c80b7b8e6200fbce.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Basic Swordsman SS.png"
-dest_files=[ "res://.import/Basic Swordsman SS.png-962f579634a8056c387b6e035390980c.stex" ]
+source_file="res://Assets/Basic Swordsman SS.png"
+dest_files=[ "res://.import/Basic Swordsman SS.png-cb7f2da9aa466329c80b7b8e6200fbce.stex" ]
 
 [params]
 
