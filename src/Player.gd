@@ -122,7 +122,7 @@ func create_hitbox(size, rel_pos, damage):
 	
 func do_melee_attack(size, rel_pos, damage, heals):
 	var hitbox = create_hitbox(size, rel_pos, 5)
-	hitbox.knock_power = Vector2(200, -100)
+	hitbox.knock_power = Vector2(200 if is_facing_right else -200, -100)
 	# Subscribe to get health!
 	if heals:
 		hitbox.connect("area_entered", self, "_on_Hitbox_area_entered")
