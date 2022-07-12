@@ -26,4 +26,5 @@ frames = SubResource( 1 )
 animation = "knife_player"
 
 [connection signal="area_entered" from="." to="." method="_on_Hitbox_area_entered"]
+[connection signal="body_shape_entered" from="." to="." method="_on_Hitbox_body_shape_entered"]
 [connection signal="viewport_exited" from="VisibilityNotifier2D" to="." method="_on_VisibilityNotifier2D_viewport_exited"]
