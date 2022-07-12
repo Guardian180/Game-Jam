@@ -115,7 +115,7 @@ func create_hitbox(size, rel_pos, damage):
 	hitbox.position = to_global(rel_pos)
 	hitbox.damage = damage
 	hitbox.collision_layer = 1 << 2
-	hitbox.collision_mask = 1 << 3
+	hitbox.collision_mask = 1 << 3 | 1
 	get_parent().add_child(hitbox)
 	return hitbox
 	
