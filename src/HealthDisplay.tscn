@@ -1,11 +1,25 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://src/Health.gd" type="Script" id=1]
+[ext_resource path="res://Assets/Heart Spreadsheet.png" type="Texture" id=2]
 
 [node name="Health" type="Control"]
 script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="Label" type="Label" parent="."]
 margin_right = 40.0
 margin_bottom = 14.0
 text = "20/10"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Hearts" type="Sprite" parent="."]
+position = Vector2( 45, 6 )
+scale = Vector2( 0.242188, 0.210938 )
+texture = ExtResource( 2 )
+hframes = 8
+vframes = 8

@@ -17,8 +17,3 @@ func _on_Hitbox_area_entered(area):
 
 func _on_VisibilityNotifier2D_viewport_exited(viewport):
 	queue_free()
-
-
-func _on_Hitbox_body_shape_entered(body_rid, body, body_shape_index, local_shape_index):
-	if projectile:
-		queue_free()

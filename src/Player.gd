@@ -1,5 +1,8 @@
 extends Actor
 
+const knife_attack = preload("res://src/KnifeAnim.tscn") # preloads knife animation as packed scene constant
+# see line 217
+
 signal health_update(maxh, curh)
 
 export var acc: = 30.0
@@ -115,14 +118,14 @@ func create_hitbox(size, rel_pos, damage):
 	hitbox.position = to_global(rel_pos)
 	hitbox.damage = damage
 	hitbox.collision_layer = 1 << 2
-	hitbox.collision_mask = 1 << 3 | 1
+	hitbox.collision_mask = 1 << 3
 	get_parent().add_child(hitbox)
 	return hitbox
 	
 	
 func do_melee_attack(size, rel_pos, damage, heals):
 	var hitbox = create_hitbox(size, rel_pos, 5)
-	hitbox.knock_power = Vector2(200 if is_facing_right else -200, -100)
+	hitbox.knock_power = Vector2(200, -100)
 	# Subscribe to get health!
 	if heals:
 		hitbox.connect("area_entered", self, "_on_Hitbox_area_entered")
@@ -210,3 +213,10 @@ func _on_Hitbox_area_entered(area):
 	print (area.get_node("CollisionShape2D").position, position)
 	if area.get_node("CollisionShape2D").position.y > position.y + $CollisionShape2D.shape.get_extents().y:
 		vel.y = -jump_height /1.25
+
+func do_knife_animation():
+	var knife_anim = knife_attack.instance() # store instance of packed scene in variable
+	get_tree().current_scene.add_child(knife_anim) # add instanced packed scene to current scene tree
+	knife_anim.global_position = global_position - Vector2(0, 1) # location of instanced packed scene.
+	# end knife attack animation. queue_free is called by animationplayer node within the knife animation scene
+	# to remove from scene when animation finishes.
