@@ -133,7 +133,7 @@ func create_hitbox(size, rel_pos, damage):
 func do_melee_attack(direction, size, damage, heals):
 	var rel_pos = Vector2.ZERO
 	if direction == attack_direction.up || direction == attack_direction.down:
-		rel_pos.y = -4 if direction == attack_direction.up else 4
+		rel_pos.y = -5 if direction == attack_direction.up else 5
 	else:
 		rel_pos.x = 3 if direction == attack_direction.right else -3
 	var hitbox = create_hitbox(size, rel_pos, 5)
@@ -197,7 +197,7 @@ func process_movement_inputs():
 		_charge_timer = 0.0
 		is_charging = true
 		is_attacking = true
-		var size = Vector2(1.0, 2.0)
+		var size = Vector2(2.0, 1.0)
 		var direction = attack_direction.up if pressed_up else \
 							attack_direction.down if pressed_down else \
 							attack_direction.right if is_facing_right else \
