@@ -8,28 +8,15 @@
 
 [node name="Main" type="Node2D"]
 script = ExtResource( 3 )
-friction = 0.66
-gravity = 15.0
+friction = 0.4
+gravity = 10.0
 
 [node name="Player" parent="." instance=ExtResource( 2 )]
-position = Vector2( 14, 20 )
-jump_height = 150.0
+position = Vector2( 5, 20 )
+jump_height = 125.0
 
 [node name="TileMap" parent="." instance=ExtResource( 1 )]
-show_collision = true
 tile_data = PoolIntArray( -1, 0, 0, -65535, 1, 0, -65533, 1, 0, -65531, 1, 0, -65529, 1, 0, -65527, 1, 0, -65525, 1, 0, -65523, 1, 0, -65521, 1, 0, -65519, 1, 0, -65517, 2, 0, 131071, 7, 0, 65555, 5, 0, 262143, 4, 0, 196609, 2, 0, 196627, 5, 0, 393215, 7, 0, 327681, 5, 0, 327691, 1, 0, 327693, 1, 0, 327699, 5, 0, 524287, 7, 0, 458753, 5, 0, 458763, 0, 0, 458765, 2, 0, 458767, 30, 0, 458769, 29, 0, 458771, 5, 0, 655359, 7, 0, 589825, 5, 0, 589827, 5, 0, 589829, 5, 0, 589831, 5, 0, 589835, 5, 0, 589837, 5, 0, 589839, 5, 0, 589841, 5, 0, 589843, 5, 0, 655369, 5, 0 )
-
-[node name="Health" parent="." instance=ExtResource( 5 )]
-margin_left = 44.0
-margin_top = 39.0
-margin_right = 44.0
-margin_bottom = 39.0
-
-[node name="Label" parent="Health" index="0"]
-margin_left = 16.0
-margin_top = -8.0
-margin_right = 56.0
-margin_bottom = 6.0
 
 [node name="Enemy" parent="." instance=ExtResource( 6 )]
 position = Vector2( 60, 65 )
@@ -39,6 +26,8 @@ position = Vector2( 38, 66 )
 acc = 0.0
 direction = -1
 
-[connection signal="health_update" from="Player" to="Health" method="_on_Player_health_update"]
+[node name="Interface" type="CanvasLayer" parent="."]
 
-[editable path="Health"]
+[node name="Health" parent="Interface" instance=ExtResource( 5 )]
+
+[connection signal="health_update" from="Player" to="Interface/Health" method="_on_Player_health_update"]
