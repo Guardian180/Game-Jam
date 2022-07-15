@@ -33,8 +33,9 @@ var _plat_drain_timer = 0.0
 var _plat_drain_timer_limit = 1.0
 var _charge_timer = 0.0
 var _charge_timer_limit = 1.0
-var _melee_delay = 0.2
+var _melee_delay = 0.1
 
+enum attack_direction {right, down, left, up}
 
 var rng = RandomNumberGenerator.new()
 func _ready():
@@ -63,8 +64,11 @@ func _process(delta):
 			var size = Vector2(3.0, 3.0)
 			var pressed_up = Input.is_action_pressed("Up")
 			var pressed_down = Input.is_action_pressed("Down")
-			var rel_pos = Vector2(0, -3 if pressed_up else 3) if pressed_up || pressed_down else Vector2(3 if is_facing_right else -3, 0)
-			do_melee_attack(size, rel_pos, 10, Vector2(200, -100) if not (pressed_up || pressed_down) else Vector2.ZERO, false, false)
+			var direction = attack_direction.up if pressed_up else \
+							attack_direction.down if pressed_down else \
+							attack_direction.right if is_facing_right else \
+							attack_direction.left
+			do_melee_attack(direction, size, 10, false)
 		elif _charge_timer > _melee_delay:
 			is_still_charging = true
 
@@ -123,10 +127,21 @@ func create_hitbox(size, rel_pos, damage):
 	return hitbox
 	
 	
-func do_melee_attack(size, rel_pos, damage, heals, knockback, bumps):
+func do_melee_attack(direction, size, damage, heals):
+	var rel_pos = Vector2.ZERO
+	if direction == attack_direction.up || direction == attack_direction.down:
+		rel_pos.y = -4 if direction == attack_direction.up else 4
+	else:
+		rel_pos.x = 3 if direction == attack_direction.right else -3
 	var hitbox = create_hitbox(size, rel_pos, 5)
-	hitbox.knock_power = knockback
-	hitbox.should_bump = bumps
+	if direction == attack_direction.down:
+		hitbox.should_bump = true
+	elif direction != attack_direction.up:
+		var knockback = Vector2(200 if direction == attack_direction.right else -200, -100)
+		hitbox.knock_power = knockback
+	
+	hitbox.rotate(direction * PI/2)
+	hitbox.show_knife()
 	# Subscribe to get health!
 	if heals:
 		hitbox.connect("area_entered", self, "_on_Hitbox_area_entered", [hitbox])
@@ -179,10 +194,13 @@ func process_movement_inputs():
 		_charge_timer = 0.0
 		is_charging = true
 		is_attacking = true
-		var size = Vector2(1.0, 2.0) if pressed_up || pressed_down else Vector2(2.0, 1.0)
-		var rel_pos = Vector2(0, -3 if pressed_up else 3) if pressed_up || pressed_down else Vector2(2 if is_facing_right else -3, 0)
-		do_melee_attack(size, rel_pos, 5, true, Vector2(200, -100) if not (pressed_up || pressed_down) else Vector2.ZERO, pressed_down && !pressed_up)
-	
+		var size = Vector2(1.0, 2.0)
+		var direction = attack_direction.up if pressed_up else \
+							attack_direction.down if pressed_down else \
+							attack_direction.right if is_facing_right else \
+							attack_direction.left
+		do_melee_attack(direction, size, 5, true)
+		
 	if Input.is_action_just_released("Attack"):
 		is_charging = false
 		is_still_charging = false
