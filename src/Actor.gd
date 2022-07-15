@@ -23,6 +23,9 @@ func add_or_remove_health(amount):
 func process_movement_inputs():
 	pass
 
+func is_invuln():
+	pass
+
 func take_damage(knockback, amount):
 	_knockback = knockback
 	add_or_remove_health(amount)

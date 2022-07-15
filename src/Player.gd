@@ -34,6 +34,8 @@ var _plat_drain_timer_limit = 1.0
 var _charge_timer = 0.0
 var _charge_timer_limit = 1.0
 var _melee_delay = 0.1
+var _iframe_timer = 0.0
+var _iframe_timer_limit = 1.2
 
 enum attack_direction {right, down, left, up}
 
@@ -71,6 +73,7 @@ func _process(delta):
 			do_melee_attack(direction, size, 10, false)
 		elif _charge_timer > _melee_delay:
 			is_still_charging = true
+	_iframe_timer = min(_iframe_timer + delta, _iframe_timer_limit)
 
 func _physics_process(delta: float):
 	# updating variables
@@ -238,3 +241,9 @@ func do_knife_animation():
 	knife_anim.global_position = global_position - Vector2(0, 1) # location of instanced packed scene.
 	# end knife attack animation. queue_free is called by animationplayer node within the knife animation scene
 	# to remove from scene when animation finishes.
+
+func is_invuln():
+	return _iframe_timer <_iframe_timer_limit
+
+func set_iframes():
+	_iframe_timer = 0.0
