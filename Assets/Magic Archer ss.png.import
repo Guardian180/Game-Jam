@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Magic Archer ss.png-dc230d055d59224f01c93dfbb423bf5b.stex"
+path="res://.import/Magic Archer ss.png-9ef5f63749442e211db15bdba13e7f68.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Magic Archer ss.png"
-dest_files=[ "res://.import/Magic Archer ss.png-dc230d055d59224f01c93dfbb423bf5b.stex" ]
+source_file="res://assets/Magic Archer ss.png"
+dest_files=[ "res://.import/Magic Archer ss.png-9ef5f63749442e211db15bdba13e7f68.stex" ]
 
 [params]
 

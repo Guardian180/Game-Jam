@@ -5,9 +5,9 @@ const knife_attack = preload("res://src/KnifeAnim.tscn") # preloads knife animat
 
 signal health_update(maxh, curh)
 
-export var acc: = 30.0
+export var acc: = 10.0
 
-export var jump_height: = 30.0
+export var jump_height: = 10.0
 
 export var max_health = 100
 
@@ -64,7 +64,7 @@ func _process(delta):
 			var pressed_up = Input.is_action_pressed("Up")
 			var pressed_down = Input.is_action_pressed("Down")
 			var rel_pos = Vector2(0, -3 if pressed_up else 3) if pressed_up || pressed_down else Vector2(3 if is_facing_right else -3, 0)
-			do_melee_attack(size, rel_pos, 10, false)
+			do_melee_attack(size, rel_pos, 10, Vector2(200, -100) if not (pressed_up || pressed_down) else Vector2.ZERO, false, false)
 		elif _charge_timer > _melee_delay:
 			is_still_charging = true
 
@@ -123,12 +123,13 @@ func create_hitbox(size, rel_pos, damage):
 	return hitbox
 	
 	
-func do_melee_attack(size, rel_pos, damage, heals):
+func do_melee_attack(size, rel_pos, damage, heals, knockback, bumps):
 	var hitbox = create_hitbox(size, rel_pos, 5)
-	hitbox.knock_power = Vector2(200, -100)
+	hitbox.knock_power = knockback
+	hitbox.should_bump = bumps
 	# Subscribe to get health!
 	if heals:
-		hitbox.connect("area_entered", self, "_on_Hitbox_area_entered")
+		hitbox.connect("area_entered", self, "_on_Hitbox_area_entered", [hitbox])
 	yield(get_tree().create_timer(_melee_delay), "timeout")
 	is_attacking = false
 	hitbox.queue_free()
@@ -180,7 +181,7 @@ func process_movement_inputs():
 		is_attacking = true
 		var size = Vector2(1.0, 2.0) if pressed_up || pressed_down else Vector2(2.0, 1.0)
 		var rel_pos = Vector2(0, -3 if pressed_up else 3) if pressed_up || pressed_down else Vector2(2 if is_facing_right else -3, 0)
-		do_melee_attack(size, rel_pos, 5, true)
+		do_melee_attack(size, rel_pos, 5, true, Vector2(200, -100) if not (pressed_up || pressed_down) else Vector2.ZERO, pressed_down && !pressed_up)
 	
 	if Input.is_action_just_released("Attack"):
 		is_charging = false
@@ -208,10 +209,9 @@ func process_movement_inputs():
 			create_platform()
 			add_or_remove_health(5)
 
-func _on_Hitbox_area_entered(area):
+func _on_Hitbox_area_entered(area, hitbox):
 	add_or_remove_health(-(max_health / 100))
-	print (area.get_node("CollisionShape2D").position, position)
-	if area.get_node("CollisionShape2D").position.y > position.y + $CollisionShape2D.shape.get_extents().y:
+	if hitbox.should_bump:
 		vel.y = -jump_height /1.25
 
 func do_knife_animation():
