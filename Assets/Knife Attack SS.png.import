@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Knife Attack SS.png-fd0d262f52acd39d22c11e6f33dea24b.stex"
+path="res://.import/Knife Attack SS.png-e14965f5341519da0057f72d838c559e.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Knife Attack SS.png"
-dest_files=[ "res://.import/Knife Attack SS.png-fd0d262f52acd39d22c11e6f33dea24b.stex" ]
+source_file="res://Assets/Knife Attack SS.png"
+dest_files=[ "res://.import/Knife Attack SS.png-e14965f5341519da0057f72d838c559e.stex" ]
 
 [params]
 
