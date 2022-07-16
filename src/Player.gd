@@ -46,7 +46,6 @@ func _ready():
 	$AnimatedSprite.play("idle")
 	rng.randomize()
 
-var Hitbox = preload("res://src/Hitbox.tscn")
 var Platform = preload("res://src/Platform.tscn")
 
 func _process(delta):
@@ -114,20 +113,6 @@ func create_platform():
 func remove_platform():
 	_platform.queue_free()
 	_platform = null
-
-func create_hitbox(size, rel_pos, damage):
-	var hitbox = Hitbox.instance()
-	var shape = RectangleShape2D.new()
-	shape.set_extents(size)
-	var collision = CollisionShape2D.new()
-	collision.set_shape(shape)
-	hitbox.add_child(collision)
-	hitbox.position = to_global(rel_pos)
-	hitbox.damage = damage
-	hitbox.collision_layer = 1 << 2
-	hitbox.collision_mask = 1 << 3
-	get_parent().add_child(hitbox)
-	return hitbox
 	
 	
 func do_melee_attack(direction, size, damage, heals):
@@ -136,7 +121,9 @@ func do_melee_attack(direction, size, damage, heals):
 		rel_pos.y = -5 if direction == attack_direction.up else 5
 	else:
 		rel_pos.x = 3 if direction == attack_direction.right else -3
-	var hitbox = create_hitbox(size, rel_pos, 5)
+	var hitbox = create_hitbox(size, rel_pos, damage)
+	hitbox.collision_layer = 1 << 2
+	hitbox.collision_mask = 1 << 3
 	if direction == attack_direction.down:
 		hitbox.should_bump = true
 	elif direction != attack_direction.up:
@@ -154,6 +141,8 @@ func do_melee_attack(direction, size, damage, heals):
 
 func do_projectile_attack(size, rel_pos, accel):
 	var hitbox = create_hitbox(size, rel_pos, 10)
+	hitbox.collision_layer = 1 << 2
+	hitbox.collision_mask = 1 << 3
 	hitbox.projectile = true
 	hitbox.speed = accel
 

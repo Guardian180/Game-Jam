@@ -28,3 +28,6 @@ func _on_VisibilityNotifier2D_viewport_exited(viewport):
 	
 func show_knife():
 	$KnifeAnim.show()
+	
+func show_enemy_sword():
+	pass

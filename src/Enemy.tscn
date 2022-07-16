@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://assets/Basic Swordsman SS.png" type="Texture" id=1]
 [ext_resource path="res://src/Enemy.gd" type="Script" id=2]
@@ -56,6 +56,9 @@ extents = Vector2( 1.42863, 3.88126 )
 [sub_resource type="RectangleShape2D" id=12]
 extents = Vector2( 1.42863, 3.25047 )
 
+[sub_resource type="RectangleShape2D" id=13]
+extents = Vector2( 1.71431, 3 )
+
 [node name="Enemy" type="KinematicBody2D"]
 collision_layer = 8
 collision_mask = 5
@@ -87,5 +90,16 @@ script = ExtResource( 3 )
 position = Vector2( -0.116126, 0.762045 )
 shape = SubResource( 12 )
 
+[node name="AttackDetector" type="Area2D" parent="."]
+position = Vector2( 3, 0 )
+collision_layer = 16
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackDetector"]
+position = Vector2( 0.285685, 0 )
+shape = SubResource( 13 )
+
 [connection signal="area_entered" from="BodyHitbox" to="BodyHitbox" method="_on_BodyHitbox_area_entered"]
 [connection signal="area_exited" from="BodyHitbox" to="BodyHitbox" method="_on_BodyHitbox_area_exited"]
+[connection signal="area_entered" from="AttackDetector" to="." method="_on_AttackDetector_area_entered"]
+[connection signal="area_exited" from="AttackDetector" to="." method="_on_AttackDetector_area_exited"]

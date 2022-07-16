@@ -16,7 +16,7 @@ position = Vector2( 5, 20 )
 jump_height = 150.0
 
 [node name="TileMap" parent="." instance=ExtResource( 1 )]
-tile_data = PoolIntArray( 196620, 5, 0, 262160, 5, 0, 327680, 0, 0, 327682, 1, 0, 327684, 1, 0, 327686, 28, 0, 327692, 5, 0, 393232, 5, 0, 458752, 4, 0, 458754, 27, 0, 458756, 27, 0, 458758, 27, 0, 458760, 30, 0, 524304, 5, 0, 589824, 8, 0, 589836, 9, 0, 589840, 9, 0, 589844, 24, 0 )
+tile_data = PoolIntArray( 196620, 5, 0, 262160, 5, 0, 327680, 0, 0, 327682, 1, 0, 327684, 1, 0, 327686, 28, 0, 327692, 5, 0, 393232, 5, 0, 458752, 4, 0, 458754, 27, 0, 458756, 27, 0, 458758, 27, 0, 458760, 30, 0, 458774, 0, 0, 458782, 0, 0, 524304, 5, 0, 524310, 0, 0, 589824, 8, 0, 589836, 9, 0, 589840, 9, 0, 589844, 24, 0, 589846, 0, 0, 589848, 0, 0, 589849, 0, 0, 589850, 0, 0, 589852, 0, 0, 589853, 0, 0, 589854, 0, 0 )
 
 [node name="Enemy" parent="." instance=ExtResource( 6 )]
 position = Vector2( 60, 65 )
@@ -29,5 +29,8 @@ direction = -1
 [node name="Interface" type="CanvasLayer" parent="."]
 
 [node name="Health" parent="Interface" instance=ExtResource( 5 )]
+
+[node name="Enemy3" parent="." instance=ExtResource( 6 )]
+position = Vector2( 217, 66 )
 
 [connection signal="health_update" from="Player" to="Interface/Health" method="_on_Player_health_update"]

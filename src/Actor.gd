@@ -1,6 +1,8 @@
 extends KinematicBody2D
 class_name Actor
 
+var Hitbox = preload("res://src/Hitbox.tscn")
+
 var vel: = Vector2.ZERO
 var _health
 
@@ -25,6 +27,18 @@ func process_movement_inputs():
 
 func is_invuln():
 	pass
+
+func create_hitbox(size, rel_pos, damage):
+	var hitbox = Hitbox.instance()
+	var shape = RectangleShape2D.new()
+	shape.set_extents(size)
+	var collision = CollisionShape2D.new()
+	collision.set_shape(shape)
+	hitbox.add_child(collision)
+	hitbox.position = to_global(rel_pos)
+	hitbox.damage = damage
+	get_parent().add_child(hitbox)
+	return hitbox
 
 func take_damage(knockback, amount):
 	_knockback = knockback
