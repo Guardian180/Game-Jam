@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://src/Health.gd" type="Script" id=1]
-[ext_resource path="res://Assets/Heart Spreadsheet.png" type="Texture" id=2]
+[ext_resource path="res://assets/Heart Spreadsheet.png" type="Texture" id=2]
 
 [node name="Health" type="Control"]
 script = ExtResource( 1 )
