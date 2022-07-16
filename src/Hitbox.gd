@@ -30,4 +30,4 @@ func show_knife():
 	$KnifeAnim.show()
 	
 func show_enemy_sword():
-	pass
+	$EnemySwordSprite.show()

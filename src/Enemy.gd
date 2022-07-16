@@ -51,6 +51,7 @@ func do_melee_attack(size, damage):
 	hitbox.collision_mask = 1 << 1
 	var knockback = Vector2(200 if direction > 0 else -200, -100)
 	hitbox.knock_power = knockback
+	hitbox.rotate(PI/2 - direction * PI/2)
 	
 	hitbox.show_enemy_sword()
 	yield(get_tree().create_timer(_melee_delay), "timeout")

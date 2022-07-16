@@ -1,7 +1,26 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://src/Hitbox.gd" type="Script" id=1]
 [ext_resource path="res://src/KnifeAnim.tscn" type="PackedScene" id=2]
+[ext_resource path="res://assets/Basic Swordsman SS.png" type="Texture" id=3]
+
+[sub_resource type="AtlasTexture" id=1]
+flags = 4
+atlas = ExtResource( 3 )
+region = Rect2( 192, 128, 64, 64 )
+
+[sub_resource type="AtlasTexture" id=2]
+flags = 4
+atlas = ExtResource( 3 )
+region = Rect2( 256, 128, 64, 64 )
+
+[sub_resource type="SpriteFrames" id=3]
+animations = [ {
+"frames": [ SubResource( 1 ), SubResource( 2 ) ],
+"loop": true,
+"name": "default",
+"speed": 10.0
+} ]
 
 [node name="Hitbox" type="Area2D"]
 script = ExtResource( 1 )
@@ -10,6 +29,12 @@ script = ExtResource( 1 )
 scale = Vector2( 0.1, 0.1 )
 
 [node name="KnifeAnim" parent="." instance=ExtResource( 2 )]
+
+[node name="EnemySwordSprite" type="AnimatedSprite" parent="."]
+visible = false
+position = Vector2( 1.19209e-07, 1.19209e-07 )
+scale = Vector2( 0.09375, 0.09375 )
+frames = SubResource( 3 )
 
 [connection signal="area_entered" from="." to="." method="_on_Hitbox_area_entered"]
 [connection signal="viewport_exited" from="VisibilityNotifier2D" to="." method="_on_VisibilityNotifier2D_viewport_exited"]
